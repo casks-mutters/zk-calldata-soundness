@@ -58,11 +58,15 @@ Example (truncated)
    • Peak block #19999998: 31.92% calldata gas share
    • Lowest block #19999992: 22.11% calldata gas share
 
-Notes
-- Data model: Calldata gas is estimated as 4 gas per zero byte and 16 gas per non-zero byte of the transaction input (classic EVM pricing). This does not include intrinsic/other gas components.
-- Blobs (EIP-4844): Blob data gas is separate from calldata. This tool focuses on calldata only and is still useful on L2s without blobs or for legacy DA analysis.
-- Reorg safety: Use `--from-latest` to avoid the freshest blocks if you want finalized data.
-- Performance: Full transactions are fetched for each block to inspect `input`; high `--count` values will increase RPC load.
-- CI guidance: This tool never fails on thresholds; instead, parse JSON and assert on `summary.avg_calldata_gas_pct` or peaks.
-- ZK impact: High calldata share increases DA costs for posting batches/proofs. Monitoring helps tune batch sizes, compression, or posting cadence.
-- Privacy: Read-only analysis; no transactions are sent.
+## Notes
+- **Gas Model:** Estimates based on 4 gas/zero byte and 16 gas/non-zero byte (EIP-2028).  
+- **Data Availability Impact:** Higher calldata gas means greater on-chain storage cost for proofs.  
+- **ZK Relevance:** Helps tune proof batching and posting strategies to minimize DA cost.  
+- **EIP-4844 Compatibility:** Blobs are separate from calldata; this tool focuses on pre-blob data metrics.  
+- **Reorg Safety:** Use `--from-latest` to avoid reorgs in unfinalized blocks.  
+- **Automation Tip:** Run hourly with `--json` and alert if average calldata > 40%.  
+- **Performance Tip:** Larger `--count` increases RPC load — use smaller samples for quick checks.  
+- **Security:** The tool is read-only and safe for production use.  
+- **Exit Codes:** Always returns `0`; you can evaluate “soundness” by parsing the JSON summary.  
+- **Extension Idea:** Add thresholds for automatic alerts, or integrate with Grafana dashboards.  
+- **Cross-Network Use:** Compare calldata trends between L1 and L2 networks to monitor scaling efficiency.  
