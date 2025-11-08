@@ -1,23 +1,23 @@
 # zk-calldata-soundness
 
-Overview
+## Overview
 `zk-calldata-soundness` measures how much of a block’s gas usage is attributable to calldata (transaction input data). This is a key driver of data-availability costs for zk-rollups (Aztec, Zama, etc.) and bridges. By scanning recent blocks, the tool estimates the calldata gas share and highlights peaks and troughs that may affect proof batching costs and posting strategies.
 
-Features
+##Features
 - Calculates zero/non-zero calldata bytes and estimated calldata gas per block (4/16 gas per byte model)
 - Reports calldata gas as a percentage of total `gasUsed`
 - Includes base fee (Gwei), tx count, and timestamps per block
 - Progress output with percentage; JSON report for CI/dashboards
 - Works on any EVM-compatible RPC; no ABI or contract list required
 
-Installation
+## Installation
 1) Python 3.9+
 2) Install dependency:
    pip install web3
 3) (Optional) Set a default RPC:
    export RPC_URL=https://mainnet.infura.io/v3/YOUR_KEY
 
-Usage
+## Usage
 Analyze the last 10 blocks:
    python app.py
 
@@ -33,7 +33,7 @@ Emit JSON for automation:
 Increase timeout for slow RPCs:
    python app.py --count 20 --timeout 60
 
-Expected Output
+## Expected Output
 - For each block: prints block number, tx count, gasUsed, estimated calldata gas, and the percentage of gasUsed that is calldata gas.
 - Summary includes:
   • Blocks analyzed
@@ -42,7 +42,7 @@ Expected Output
   • Peak and lowest block by calldata gas share
 - JSON mode outputs the per-block metrics and summary for easy thresholding in CI.
 
-Example (truncated)
+## Example (truncated)
 🔧 zk-calldata-soundness
 🧭 Chain ID: 1
 🔗 RPC: https://mainnet.infura.io/v3/…
@@ -58,7 +58,7 @@ Example (truncated)
    • Peak block #19999998: 31.92% calldata gas share
    • Lowest block #19999992: 22.11% calldata gas share
 
-Notes
+## Notes
 - Data model: Calldata gas is estimated as 4 gas per zero byte and 16 gas per non-zero byte of the transaction input (classic EVM pricing). This does not include intrinsic/other gas components.
 - Blobs (EIP-4844): Blob data gas is separate from calldata. This tool focuses on calldata only and is still useful on L2s without blobs or for legacy DA analysis.
 - Reorg safety: Use `--from-latest` to avoid the freshest blocks if you want finalized data.
